@@ -7,19 +7,24 @@
  */
 
 #include <iostream>
+#include <string>
 #include "cdk.h"
-
+#include "BinaryFileModel.h"
 
 #define MATRIX_WIDTH 3
 #define MATRIX_HEIGHT 5
-#define BOX_WIDTH 15
+#define BOX_WIDTH 20 //15
 #define MATRIX_NAME_STRING "Test Matrix"
+
+
+void test();
 
 using namespace std;
 
 
 int main()
 {
+  //  test();
 
   WINDOW	*window;
   CDKSCREEN	*cdkscreen;
@@ -33,8 +38,8 @@ int main()
   // values you choose to set for MATRIX_WIDTH and MATRIX_HEIGHT
   // above.
 
-  const char 		*rowTitles[] = {"R0", "R1", "R2", "R3", "R4", "R5"};
-  const char 		*columnTitles[] = {"C0", "C1", "C2", "C3", "C4", "C5"};
+  const char 		*rowTitles[] = {"", "A", "B", "C", "D", "E", "F"};
+  const char 		*columnTitles[] = {"", "A", "B", "C", "D", "E", "F"};
   int		boxWidths[] = {BOX_WIDTH, BOX_WIDTH, BOX_WIDTH, BOX_WIDTH, BOX_WIDTH, BOX_WIDTH};
   int		boxTypes[] = {vMIXED, vMIXED, vMIXED, vMIXED,  vMIXED,  vMIXED};
 
@@ -64,11 +69,25 @@ int main()
 
   /* Display the Matrix */
   drawCDKMatrix(myMatrix, true);
-
+  
+  BinaryFile dispFile;
+  dispFile.readFile("cs3377.bin");
   /*
    * Dipslay a message
    */
-  setCDKMatrixCell(myMatrix, 2, 2, "Test Message");
+  setCDKMatrixCell(myMatrix, 1, 1, dispFile.header.getMagicNumTitle().c_str());
+  setCDKMatrixCell(myMatrix, 1, 2, dispFile.header.getVersionNumTitle().c_str());
+  setCDKMatrixCell(myMatrix, 1, 3, dispFile.header.getNumRecordsTitle().c_str());
+
+  int i = 2;
+  for(list<BinaryFileRecord>::iterator it = dispFile.records.begin(); it != dispFile.records.end(); it++) {
+    BinaryFileRecord rec = (BinaryFileRecord)*it;
+    setCDKMatrixCell(myMatrix, i, 1, rec.getStrLengthTitle().c_str());
+    setCDKMatrixCell(myMatrix, i, 2, rec.stringBuffer);
+    i++;
+  }
+  
+  // setCDKMatrixCell(myMatrix, 2, 2, "Test Message");
   drawCDKMatrix(myMatrix, true);    /* required  */
 
   /* So we can see results, pause until a key is pressed. */
@@ -78,3 +97,15 @@ int main()
   // Cleanup screen
   endCDK();
 }
+/*
+void test() {
+  BinaryFile dispFile;
+  dispFile.readFile("cs3377.bin");
+  cout << "Back from read file." << endl;
+  cout << "Magic Number : " <<  hex << dispFile.header.magicNumber << endl;
+  unsigned char x;
+  cin >> x;
+
+}
+
+*/
