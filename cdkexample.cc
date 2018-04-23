@@ -1,38 +1,34 @@
 /*
  * Usage of CDK Matrix
  *
- * File:   example1.cc
- * Author: Stephen Perkins
- * Email:  stephen.perkins@utdallas.edu
+ * CDKEXAMPLE provided by Dr. Perkins
+ * Tyler Waller tmw160530@utdallas.edu
+ * 3377.501
  */
 
 #include <iostream>
 #include <string>
 #include "cdk.h"
 #include "BinaryFileModel.h"
+// Includes header file.
 
+// Created assignment parameters of the table.
 #define MATRIX_WIDTH 3
 #define MATRIX_HEIGHT 5
 #define BOX_WIDTH 20 //15
 #define MATRIX_NAME_STRING "Test Matrix"
 
-
-void test();
-
 using namespace std;
-
 
 int main()
 {
-  //  test();
-
   WINDOW	*window;
   CDKSCREEN	*cdkscreen;
   CDKMATRIX     *myMatrix;           // CDK Screen Matrix
 
   // Remember that matrix starts out at 1,1.
   // Since arrays start out at 0, the first entries
-  // below ("R0", and "C0") are just placeholders
+  // below ("", and "") are just placeholders
   // 
   // Finally... make sure your arrays have enough entries given the
   // values you choose to set for MATRIX_WIDTH and MATRIX_HEIGHT
@@ -73,21 +69,21 @@ int main()
   BinaryFile dispFile;
   dispFile.readFile("cs3377.bin");
   /*
-   * Dipslay a message
+   * Setting our information gathered from the bin file in to place 
+   * correctly in the rows and columns.
    */
   setCDKMatrixCell(myMatrix, 1, 1, dispFile.header.getMagicNumTitle().c_str());
   setCDKMatrixCell(myMatrix, 1, 2, dispFile.header.getVersionNumTitle().c_str());
   setCDKMatrixCell(myMatrix, 1, 3, dispFile.header.getNumRecordsTitle().c_str());
-
+  // Starting on the second row and advancing down from there.
   int i = 2;
+  // Loop to place the strlength and stringBuffer in to place.
   for(list<BinaryFileRecord>::iterator it = dispFile.records.begin(); it != dispFile.records.end(); it++) {
     BinaryFileRecord rec = (BinaryFileRecord)*it;
     setCDKMatrixCell(myMatrix, i, 1, rec.getStrLengthTitle().c_str());
     setCDKMatrixCell(myMatrix, i, 2, rec.stringBuffer);
     i++;
   }
-  
-  // setCDKMatrixCell(myMatrix, 2, 2, "Test Message");
   drawCDKMatrix(myMatrix, true);    /* required  */
 
   /* So we can see results, pause until a key is pressed. */
@@ -97,15 +93,3 @@ int main()
   // Cleanup screen
   endCDK();
 }
-/*
-void test() {
-  BinaryFile dispFile;
-  dispFile.readFile("cs3377.bin");
-  cout << "Back from read file." << endl;
-  cout << "Magic Number : " <<  hex << dispFile.header.magicNumber << endl;
-  unsigned char x;
-  cin >> x;
-
-}
-
-*/
